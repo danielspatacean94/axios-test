@@ -22,10 +22,10 @@ Output will be written in standard output and also `app.log` (file logs contains
 
 ## Findings
 
-- Using some geolocation free APIs (`ip-api.com`, `ipapi.co`), looks like the requests are coming from the expected place (proxy/local)
+- Using some free APIs (`ip-api.com`, `ipapi.co`, `httpbin.org`), looks like the requests are, usually, coming from the expected place (proxy/local)
 - Need a stable proxy server
 - From my past experience with axios and proxy, behind a corporate proxy, I had to explicitly set the proxy in the request options. This might be fixed now.
-- axios still have problems handling correctly `https` topic (`no_proxy` with port or `https` related proxies). In different scenarios, weird ssl errors are thrown.
+- Found issues with `no_proxy` vs `https_proxy` and `http_proxy`, when working with ports, like :443, :80
 - Using a proxy server over http for both, https_proxy and http_proxy + no_proxy containing values without ports, works fine
 - For working properly with `https_proxy`, in most cases, an `https proxy agent` is required
 

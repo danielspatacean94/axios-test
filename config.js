@@ -1,11 +1,11 @@
 export default {
-  // using a proxy server that I found on https://www.freeproxylists.net/?s=u and/or https://www.sslproxies.org/
+  // using a proxy server that I found on https://freeproxylists.net/?s=u and/or https://sslproxies.org/
   proxyHost: '104.161.21.107',
   proxyPort: '2019',
 
   testCases: [
     {
-      name:  'http://ip-api.com/json using proxy',
+      name:  'http://ip-api.com/json with proxy',
       apiUrl: 'http://ip-api.com/json',
       proxy: true,
       expectation: 'proxy',
@@ -17,14 +17,14 @@ export default {
       expectation: 'direct',
     },
     {
-      name:  'http://ip-api.com/json using proxy and no_proxy = *',
+      name:  'http://ip-api.com/json with proxy and no_proxy = *',
       apiUrl: 'http://ip-api.com/json',
       proxy: true,
       noProxy: '*',
       expectation: 'direct',
     },
     {
-      name: 'https://ipapi.co/json using proxy',
+      name: 'https://ipapi.co/json with proxy',
       apiUrl: 'https://ipapi.co/json',
       proxy: true,
       expectation: 'proxy',
@@ -43,13 +43,6 @@ export default {
       expectation: 'direct',
     },
     {
-      name: 'http://ipapi.co/json with proxy + no_proxy = ipapi.co:443',
-      apiUrl: 'http://ipapi.co/json',
-      proxy: true,
-      noProxy: 'ipapi.co:443',
-      expectation: 'direct',
-    },
-    {
       name: 'https://ipapi.co/json with proxy + no_proxy = ipapi.co',
       apiUrl: 'https://ipapi.co/json',
       proxy: true,
@@ -57,10 +50,83 @@ export default {
       expectation: 'direct',
     },
     {
+      name: 'http://ipapi.co/json with proxy + no_proxy = ipapi.co:443',
+      apiUrl: 'http://ipapi.co/json',
+      proxy: true,
+      noProxy: 'ipapi.co:443',
+      expectation: 'proxy',
+    },
+    {
       name: 'https://ipapi.co/json with proxy + no_proxy = ipapi.co:443',
       apiUrl: 'https://ipapi.co/json',
       proxy: true,
       noProxy: 'ipapi.co:443',
+      expectation: 'direct',
+    },
+    {
+      name: 'https://httpbin.org/ip with proxy',
+      apiUrl: 'https://httpbin.org/ip',
+      proxy: true,
+      expectation: 'proxy',
+    },
+    {
+      name: 'https://httpbin.org/ip without proxy',
+      apiUrl: 'https://httpbin.org/ip',
+      proxy: false,
+      expectation: 'direct',
+    },
+    {
+      name: 'http://httpbin.org/ip with proxy',
+      apiUrl: 'http://httpbin.org/ip',
+      proxy: true,
+      expectation: 'proxy',
+    },
+    {
+      name: 'http://httpbin.org/ip without proxy',
+      apiUrl: 'http://httpbin.org/ip',
+      proxy: false,
+      expectation: 'direct',
+    },
+    {
+      name: 'http://httpbin.org/ip with proxy + no_proxy = httpbin.org',
+      apiUrl: 'http://httpbin.org/ip',
+      proxy: true,
+      noProxy: 'httpbin.org',
+      expectation: 'direct',
+    },
+    {
+      name: 'https://httpbin.org/ip with proxy + no_proxy = httpbin.org',
+      apiUrl: 'https://httpbin.org/ip',
+      proxy: true,
+      noProxy: 'httpbin.org',
+      expectation: 'direct',
+    },
+    {
+      name: 'http://httpbin.org/ip with proxy + no_proxy = httpbin.org:443',
+      apiUrl: 'http://httpbin.org/ip',
+      proxy: true,
+      noProxy: 'httpbin.org:443',
+      expectation: 'proxy',
+    },
+    {
+      name: 'https://httpbin.org/ip with proxy + no_proxy = httpbin.org:443',
+      apiUrl: 'https://httpbin.org/ip',
+      proxy: true,
+      noProxy: 'httpbin.org:443',
+      expectation: 'direct',
+    },
+    {
+      name: 'https://httpbin.org/ip with proxy + no_proxy = httpbin.org:80',
+      apiUrl: 'https://httpbin.org/ip',
+      proxy: true,
+      noProxy: 'httpbin.org:80',
+      expectation: 'proxy',
+    },
+    {
+      name: 'http://httpbin.org/ip with proxy + no_proxy = httpbin.org:80',
+      apiUrl: 'http://httpbin.org/ip',
+      proxy: true,
+      noProxy: 'httpbin.org:80',
       expectation: 'direct',
     },
   ]

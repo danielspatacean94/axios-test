@@ -122,38 +122,26 @@ const clearLogFile = async() => {
       const response = await axiosRequest(options);
 
       if(response && response.request) {
-        logger.info(`[${name}] Host on response.request is ${response.request.host}`);
+        const host = response.request.host;
+
+        let logLevel = 'info';
+
+        if(expectation === 'direct' && host === proxyHost) {
+          logLevel = 'warn';
+        } else if(expectation === 'proxy' && host !== proxyHost) {
+          logLevel = 'warn';
+        }
+
+        logger[logLevel](`[${name}] response.request.host is ${response.request.host}`);
       }
     
       extra.trace(`Response \n`, response.data);
-  
-      if(response.data.query) {
-        // for ip-api.com responses
-        logger.info(`[${name}] Result: Request came from ${response.data.country}/${response.data.query}`);
-      }
-      if(response.data.country_name) {
-        // for ipapi.co responses
-        logger.info(`[${name}] Result: Request came from ${response.data.country_name}`);
-      }
-
 
       // Check if expectation meets reality
-      const {ip, query} = response.data;
-      const source     = ip || query;
+      const {ip, query, origin} = response.data;
+      const source              = ip || query || origin;
 
-      if(expectation === 'proxy') {
-        if(source === proxyHost) {
-          logger.info(`[${name}] Expectation met. Request came from Proxy Server: ${source}`);
-        } else {
-          logger.warn(`[${name}] Expectation not met. Request came from local environment: ${source}`);
-        }
-      } else if(expectation === 'direct') {
-        if(source !== proxyHost) {
-          logger.info(`[${name}] Expectation met. Request came from local environment: ${source}`);
-        } else {
-          logger.warn(`[${name}] Expectation not met. Request came from Proxy server: ${source}`);
-        }
-      }
+      logger.info(`[${name}] Finished: Server responded that request origin is ${source}`);
     } catch(err) {
       logger.warn(`[${name}] Failed`, err.message);
     } finally {
