@@ -18,9 +18,7 @@ log4js.configure({
 const logger = log4js.getLogger('app');
 const extra  = log4js.getLogger('extra');
 
-const {proxyHost, proxyPort} = appConfig;
-
-const setProxy = () => {
+const setProxy = (proxyHost, proxyPort) => {
   logger.debug(`Setting proxy`);
   process.env.http_proxy  = `http://${proxyHost}:${proxyPort}`;
   process.env.https_proxy = `http://${proxyHost}:${proxyPort}`;
@@ -50,68 +48,6 @@ const unsetProxy = () => {
   // process.env.http_proxy  = null; 
   // process.env.https_proxy = null;
 };
-
-const configs = [
-  {
-    name:  'http://ip-api.com/json using proxy',
-    apiUrl: 'http://ip-api.com/json',
-    proxy: true,
-    expectation: 'proxy',
-  },
-  {
-    name: 'http://ip-api.com/json without proxy',
-    apiUrl: 'http://ip-api.com/json',
-    proxy: false,
-    expectation: 'direct',
-  },
-  {
-    name:  'http://ip-api.com/json using proxy and no_proxy = *',
-    apiUrl: 'http://ip-api.com/json',
-    proxy: true,
-    noProxy: '*',
-    expectation: 'direct',
-  },
-  {
-    name: 'https://ipapi.co/json using proxy',
-    apiUrl: 'https://ipapi.co/json',
-    proxy: true,
-    expectation: 'proxy',
-  },
-  {
-    name: 'https://ipapi.co/json without proxy',
-    apiUrl: 'https://ipapi.co/json',
-    proxy: false,
-    expectation: 'direct',
-  },
-  {
-    name: 'http://ipapi.co/json with proxy + no_proxy = ipapi.co',
-    apiUrl: 'http://ipapi.co/json',
-    proxy: true,
-    noProxy: 'ipapi.co',
-    expectation: 'direct',
-  },
-  {
-    name: 'http://ipapi.co/json with proxy + no_proxy = ipapi.co:443',
-    apiUrl: 'http://ipapi.co/json',
-    proxy: true,
-    noProxy: 'ipapi.co:443',
-    expectation: 'direct',
-  },
-  {
-    name: 'https://ipapi.co/json with proxy + no_proxy = ipapi.co',
-    apiUrl: 'https://ipapi.co/json',
-    proxy: true,
-    noProxy: 'ipapi.co',
-    expectation: 'direct',
-  },
-  {
-    name: 'https://ipapi.co/json with proxy + no_proxy = ipapi.co:443',
-    apiUrl: 'https://ipapi.co/json',
-    proxy: true,
-    noProxy: 'ipapi.co:443',
-    expectation: 'direct',
-  },
-];
 
 const axiosRequest = async(options) => {
   let attempts   = 2;
@@ -143,25 +79,27 @@ const clearLogFile = async() => {
 };
 
 (async() => {
+  const {proxyHost, proxyPort, testCases} = appConfig;
+
   await clearLogFile();
   logger.info(`
   Started checking proxy handling with axios.
-  Configurations found ${configs.length}.
+  Test cases found ${testCases.length}.
   Proxy server that would be used: ${proxyHost}:${proxyPort}
   `
   );
   logger.info('----------------------------------------------------------------------------------------------------------------')
 
-  const onlyConfigs  = configs.filter(item => item.only);
-  const finalConfigs = onlyConfigs.length ? onlyConfigs : configs;
+  const onlyTestCases  = testCases.filter(item => item.only);
+  const finalTestCases = onlyTestCases.length ? onlyTestCases : testCases;
 
-  for(const config of finalConfigs) {
-    const {name, proxy, expectation, noProxy, apiUrl} = config;
+  for(const testCase of finalTestCases) {
+    const {name, proxy, expectation, noProxy, apiUrl} = testCase;
 
     logger.info(`[${name}] Start`);
 
     if(proxy) {
-      setProxy();
+      setProxy(proxyHost, proxyPort);
     } else {
       unsetProxy();
     }
@@ -207,11 +145,11 @@ const clearLogFile = async() => {
         if(source === proxyHost) {
           logger.info(`[${name}] Expectation met. Request came from Proxy Server: ${source}`);
         } else {
-          logger.warn(`[${name}] Expectation not met. Request did not came from Proxy server: ${source}`);
+          logger.warn(`[${name}] Expectation not met. Request came from local environment: ${source}`);
         }
       } else if(expectation === 'direct') {
         if(source !== proxyHost) {
-          logger.info(`[${name}] Expectation met. Request did not came from Proxy Server: ${source}`);
+          logger.info(`[${name}] Expectation met. Request came from local environment: ${source}`);
         } else {
           logger.warn(`[${name}] Expectation not met. Request came from Proxy server: ${source}`);
         }
