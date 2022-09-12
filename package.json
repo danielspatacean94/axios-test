@@ -1,0 +1,22 @@
+{
+  "name": "axios-test",
+  "version": "0.0.0",
+  "description": "Testing axios library with proxy",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "test",
+    "axios",
+    "proxy"
+  ],
+  "author": "daniel.spatacean@miratechgroup.com",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "https-proxy-agent": "^5.0.1",
+    "log4js": "^6.6.1"
+  }
+}
