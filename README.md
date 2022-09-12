@@ -7,8 +7,9 @@ Reasearch, check and test if axios handles correctly proxy, using its native fun
 
 ## Proxy server
 
-- Using a proxy server found on `https://www.freeproxylists.net/?s=u`
+- In order to simulate a `behind corporate proxy` situation, used a proxy server found on `https://www.freeproxylists.net/?s=u`
 - They are pretty unstable, so we might have to switch the proxy server that we are using for test
+- Feel free to overwrite `proxyHost` and `proxyPort` in `config.js`
 
 
 ## run
@@ -24,9 +25,9 @@ Output will be written in standard output and also `app.log` (file logs contains
 - Using some geolocation free APIs (`ip-api.com`, `ipapi.co`), looks like the requests are coming from the expected place (proxy/local)
 - Need a stable proxy server
 - From my past experience with axios and proxy, behind a corporate proxy, I had to explicitly set the proxy in the request options. This might be fixed now.
-- axios still have problems handling correctly `https` topic (`no_proxy` or `https` related proxies)
+- axios still have problems handling correctly `https` topic (`no_proxy` with port or `https` related proxies)
 - Using a proxy server over http for both, https_proxy and http_proxy + no_proxy containing values without ports, works fine
-- For working properly with `https_proxy`, in most cases, an `HttpsProxyAgent` is required
+- For working properly with `https_proxy`, in most cases, an `https proxy agent` is required
 
 
 ## Related topics

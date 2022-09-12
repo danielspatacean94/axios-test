@@ -2,6 +2,8 @@ import fsPromises from 'fs/promises';
 import axios      from 'axios';
 import log4js     from 'log4js';
 
+import appConfig  from './config.js';
+
 log4js.configure({
   appenders: {
     consoleAppender: {type: 'console', category: 'app'},
@@ -16,12 +18,7 @@ log4js.configure({
 const logger = log4js.getLogger('app');
 const extra  = log4js.getLogger('extra');
 
-// using a proxy server that I found on https://www.freeproxylists.net/?s=u and/or https://www.sslproxies.org/
-const proxyHost = '104.161.21.107';
-const proxyPort = '2019';
-
-// const proxyHost = '20.230.175.193'; // 130.41.55.190	8080
-// const proxyPort = '8080';
+const {proxyHost, proxyPort} = appConfig;
 
 const setProxy = () => {
   logger.debug(`Setting proxy`);
@@ -118,7 +115,7 @@ const configs = [
 
 const axiosRequest = async(options) => {
   let attempts   = 2;
-  let result     = {};
+  let result     = null;
 
   while(attempts > 0 && !result) {
     try {
@@ -134,7 +131,7 @@ const axiosRequest = async(options) => {
     }
   }
 
-  return result;
+  return result || {};
 };
 
 const clearLogFile = async() => {
@@ -186,7 +183,9 @@ const clearLogFile = async() => {
       };
       const response = await axiosRequest(options);
 
-      logger.info(`[${name}] Host on response.request is ${response.request.host}`);
+      if(response && response.request) {
+        logger.info(`[${name}] Host on response.request is ${response.request.host}`);
+      }
     
       extra.trace(`Response \n`, response.data);
   
